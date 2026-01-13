@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withAlpha(77),
                     ),
                   ),
                   const Padding(
@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withAlpha(77),
                     ),
                   ),
                 ],

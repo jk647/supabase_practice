@@ -25,16 +25,20 @@ class TaskManagementApp extends StatelessWidget {
       title: 'Task Manager',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        useMaterial3: true,
         brightness: Brightness.dark,
+
         scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+
         primaryColor: const Color(0xFFF7DF27),
-        colorScheme: ColorScheme.dark(
-          primary: const Color(0xFFF7DF27),
-          secondary: const Color(0xFFF7DF27),
-          background: const Color(0xFF0A0A0A),
-          surface: const Color(0xFF1A1A1A),
+
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFF7DF27),
+          secondary: Color(0xFFF7DF27),
+          surface: Color(0xFF1A1A1A),
         ),
       ),
+
       home: const AuthWrapper(),
     );
   }

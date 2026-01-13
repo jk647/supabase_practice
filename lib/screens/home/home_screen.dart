@@ -4,6 +4,8 @@ import 'package:supabase_practice/screens/auth/services/auth_services.dart';
 import 'package:supabase_practice/screens/home/models/task_model.dart';
 import 'package:supabase_practice/screens/home/services/task_service.dart';
 import 'package:supabase_practice/screens/home/widgets/task_card.dart';
+import 'package:supabase_practice/screens/profile/profile_screen.dart';
+import 'package:supabase_practice/screens/home/widgets/statistics_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,11 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Task> _allTasks = [];
   bool _isLoading = true;
+  Map<String, dynamic>? _statistics;
 
   @override
   void initState() {
     super.initState();
     _loadTasks();
+    _loadStatistics();
   }
 
   Future<void> _loadTasks() async {
@@ -50,6 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => _isLoading = false);
         _showSnackBar('Failed to load tasks: $e', isError: true);
       }
+    }
+  }
+
+  Future<void> _loadStatistics() async {
+    try {
+      final stats = await _taskService.getTaskStatistics();
+      if (mounted) {
+        setState(() => _statistics = stats);
+      }
+    } catch (e) {
+      debugPrint('Failed to load statistics: $e');
     }
   }
 
@@ -130,7 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: selectedCat,
+                initialValue: selectedCat,
+
                 dropdownColor: const Color(0xFF1A1A1A),
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
@@ -173,10 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           await _taskService.addTask(newTask);
 
-                          if (mounted) {
+                          if (ctx.mounted) {
                             Navigator.pop(ctx);
+                          }
+
+                          if (mounted) {
                             _showSnackBar('Task added successfully!');
                             _loadTasks();
+                            _loadStatistics();
                           }
                         } catch (e) {
                           setDialogState(() => isAdding = false);
@@ -228,6 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await _taskService.toggleTaskCompletion(task.id!, !task.isCompleted);
       _loadTasks();
+      _loadStatistics();
     } catch (e) {
       _showSnackBar('Failed to update task: $e', isError: true);
     }
@@ -237,6 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await _taskService.toggleTaskPin(task.id!, !task.isPinned);
       _loadTasks();
+      _loadStatistics();
     } catch (e) {
       _showSnackBar('Failed to pin task: $e', isError: true);
     }
@@ -247,6 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await _taskService.deleteTask(task.id!);
       _showSnackBar('Task deleted successfully!');
       _loadTasks();
+      _loadStatistics();
     } catch (e) {
       _showSnackBar('Failed to delete task: $e', isError: true);
     }
@@ -276,6 +299,38 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.refresh, color: Color(0xFFF7DF27)),
             onPressed: _loadTasks,
+          ),
+          IconButton(
+            icon: const Icon(Icons.done_all, color: Color(0xFFF7DF27)),
+            onPressed: () async {
+              final pendingIds = _filteredTasks
+                  .where((t) => !t.isCompleted)
+                  .map((t) => t.id!)
+                  .toList();
+
+              if (pendingIds.isEmpty) {
+                _showSnackBar('No pending tasks to complete');
+                return;
+              }
+
+              try {
+                await _taskService.bulkCompleteTasks(pendingIds);
+                _showSnackBar('All tasks completed!');
+                _loadTasks();
+                _loadStatistics();
+              } catch (e) {
+                _showSnackBar('Failed to complete tasks: $e', isError: true);
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.person, color: Color(0xFFF7DF27)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.logout, color: Color(0xFFF7DF27)),
@@ -312,6 +367,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+
+                if (_statistics != null) buildStatisticsCard(_statistics!),
 
                 // Categories
                 SizedBox(

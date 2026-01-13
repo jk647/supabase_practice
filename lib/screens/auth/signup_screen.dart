@@ -40,15 +40,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (response.user != null) {
-        if (mounted) {
-          _showSnackBar('Account created successfully!');
-          await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
-          );
-        }
+        _showSnackBar('Account created successfully!');
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -161,7 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withAlpha(77),
                     ),
                   ),
                   const Padding(
@@ -171,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.withAlpha(77),
                     ),
                   ),
                 ],
