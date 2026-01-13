@@ -54,18 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-void _handleGoogleSignIn() async {
-  try {
-    await _authService.signInWithGoogle();
-  } catch (e) {
-    if (mounted) {
-      _showSnackBar(
-        'Failed to sign in with Google',
-        isError: true,
-      );
+  void _handleGoogleSignIn() async {
+    try {
+      await _authService.signInWithGoogle();
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar('Failed to sign in with Google', isError: true);
+      }
     }
   }
-}
 
   void _showSnackBar(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -183,10 +180,7 @@ void _handleGoogleSignIn() async {
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'OR',
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    child: Text('OR', style: TextStyle(color: Colors.grey)),
                   ),
                   Expanded(
                     child: Container(
@@ -273,8 +267,7 @@ void _handleGoogleSignIn() async {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   child: const Text(
                     'Forgot Password?',
                     style: TextStyle(color: Color(0xFFF7DF27)),

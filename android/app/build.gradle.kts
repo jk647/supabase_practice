@@ -28,7 +28,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-    }
+        resValue("string", "default_web_client_id", "1091390221866-u0j8jkd0qlm1mvb7gir1se9qopfenjkq.apps.googleusercontent.com")    }
 
     buildTypes {
         release {

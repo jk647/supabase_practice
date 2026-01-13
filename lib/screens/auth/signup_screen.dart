@@ -43,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (mounted) {
           _showSnackBar('Account created successfully!');
           await Future.delayed(const Duration(milliseconds: 500));
-          
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -63,19 +63,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     }
   }
-void _handleGoogleSignIn() async {
-  try {
-    await _authService.signInWithGoogle();
-    // AuthWrapper will handle navigation automatically
-  } catch (e) {
-    if (mounted) {
-      _showSnackBar(
-        'Failed to sign in with Google',
-        isError: true,
-      );
+
+  void _handleGoogleSignIn() async {
+    try {
+      await _authService.signInWithGoogle();
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar('Failed to sign in with Google', isError: true);
+      }
     }
   }
-}
+
   void _showSnackBar(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -168,10 +166,7 @@ void _handleGoogleSignIn() async {
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'OR',
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    child: Text('OR', style: TextStyle(color: Colors.grey)),
                   ),
                   Expanded(
                     child: Container(
